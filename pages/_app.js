@@ -2,6 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import App from 'next/app';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
 
 class MyApp extends App {
@@ -20,7 +21,7 @@ class MyApp extends App {
 		return (
 			<React.Fragment>
 				<Head>
-					<title>Create Next App</title>
+					<title>Stock Charts</title>
 					<link rel="icon" href="/logo.svg" />
 				</Head>
 				<Component {...pageProps}/>

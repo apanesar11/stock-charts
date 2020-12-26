@@ -1,9 +1,6 @@
-import React from 'react';
+import React from "react";
+import Dashboard from "../scenes/dashboard/dashboard.scene";
 
-const Home = () => (
-	<div>
-		Welcome
-	</div>
-);
+const Home = () => <Dashboard/>;
 
 export default Home;
