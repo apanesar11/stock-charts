@@ -1,22 +1,39 @@
 const express = require('express');
 const next = require('next');
+const cors = require('cors')
 const routes = require('../routes');
 const bodyParser = require('body-parser');
+const fetch = require('node-fetch');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = routes.getRequestHandler(app);
 
+POLYGON_KEY = process.env.POLYGON_KEY;
+
 app
 	.prepare()
 	.then(() => {
-	const server = express();
+		const server = express();
 		server.use(bodyParser.json());
+		server.use(cors());
 
-		// place GET POST PUT DELETE routes here ..
+		server.get('/api/dailyaggs', async (req, res) => {
+			const {ticker} = req.query;
+			const polygonRes = await fetch(`https://api.polygon.io/v2/aggs/ticker/${ticker}/range/1/day/2020-10-01/2020-12-25?unadjusted=true&sort=asc&limit=120&apiKey=${POLYGON_KEY}`)
+			const data = await polygonRes.json();
+			const formattedData = data.results.map(data => ({
+        x: new Date(data.t),
+        y: [data.o, data.h, data.l, data.c]
+      }));
+			return res.send({
+				success: true,
+				data: formattedData
+			});
+		});
 
 		server.get('*', (req, res) => {
-		return handle(req, res);
+			return handle(req, res);
 		});
 
 		const PORT = process.env.PORT || 3000;
@@ -26,6 +43,6 @@ app
 		});
 	})
 	.catch((ex) => {
-	console.error(ex.stack)
-	process.exit(1)
+		console.error(ex.stack)
+		process.exit(1)
 	});

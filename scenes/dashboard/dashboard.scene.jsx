@@ -22,10 +22,7 @@ const Dashboard = () => {
     setResults([])
     tickers.forEach(async ticker => {
       const res = await getStockData(ticker);
-      const histData = res.results.map(data => ({
-        x: new Date(data.t),
-        y: [data.o, data.h, data.l, data.c]
-      }));
+      const histData = res.data;
       setResults(results => [...results, { ticker, data: histData }]);
     });
   };
@@ -38,11 +35,11 @@ const Dashboard = () => {
   return (
     <>
       <Navbar/>
-      <Container fluid className='mt-5'>
-        <Row>
+      <Container fluid className='mt-5 pt-5'>
+        <Row className='pl-lg-5 pl-sm-0 pr-lg-5 pr-sm-0'>
           {
             results.map(({ticker, data}, id) => (
-              <Col key={`stock-${ticker}-${id}`} sm={12} md={6} lg={4}>
+              <Col key={`stock-${ticker}-${id}`} sm={12} lg={6} xl={4}>
                 <StockChart ticker={ticker} data={data} />
               </Col>
             ))
