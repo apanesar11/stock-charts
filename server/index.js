@@ -11,14 +11,18 @@ const handle = routes.getRequestHandler(app);
 
 POLYGON_KEY = process.env.POLYGON_KEY;
 
+const corsOptions = {
+	origin: process.env.BACKEND_URL,
+	optionsSuccessStatus: 200
+}
+
 app
 	.prepare()
 	.then(() => {
 		const server = express();
 		server.use(bodyParser.json());
-		server.use(cors());
 
-		server.get('/api/dailyaggs', async (req, res) => {
+		server.get('/api/dailyaggs', cors(corsOptions), async (req, res) => {
 			const {ticker} = req.query;
 			const polygonRes = await fetch(`https://api.polygon.io/v2/aggs/ticker/${ticker}/range/1/day/2020-10-01/2020-12-25?unadjusted=true&sort=asc&limit=120&apiKey=${POLYGON_KEY}`)
 			const data = await polygonRes.json();
