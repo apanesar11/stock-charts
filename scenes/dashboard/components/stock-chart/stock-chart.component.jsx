@@ -65,8 +65,7 @@ const StockChart = ({ ticker, data }) => {
       className='mb-5 p-3'
       style={{
         borderRadius: '6px',
-        backgroundColor: 'white',
-        height: '350px'
+        backgroundColor: 'white'
       }}
     >
       <div
@@ -90,7 +89,12 @@ const StockChart = ({ ticker, data }) => {
         width="100%"
       />
       { !showChart &&
-        <div className='h-100 w-100 d-flex align-items-center text-center'>
+        <div
+          style={{
+            height: '328px'
+          }}
+          className='w-100 d-flex align-items-center text-center'
+        >
           <Circle
             size={100}
             className='mx-auto'
