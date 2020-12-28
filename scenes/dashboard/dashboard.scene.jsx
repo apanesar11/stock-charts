@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {Container, Row, Col, Modal, Button} from "react-bootstrap";
-import {IoIosCloseCircleOutline} from "react-icons/io";
+import {Container, Row, Col} from "react-bootstrap";
 import Navbar from "../../components/navbar/navbar.component";
 import StockChart from "./components/stock-chart/stock-chart.component";
 
@@ -9,12 +8,12 @@ import DeleteModal from "./components/delete-modal/delete-modal.component";
 
 const constants = {
   STOCKS: [
-    {ticker: 'TCDA'},
+    {ticker: 'GOOG'},
     {ticker: 'PLTR'},
     {ticker: 'TSLA'},
     {ticker: 'SPY'},
     {ticker: 'AMD'},
-    {ticker: 'ZM'}
+    //{ticker: 'ZM'}
   ]
 };
 
@@ -23,13 +22,16 @@ const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedTicker, setSelectedTicker] = useState(null);
 
-  const getData = tickers => {
+  const getData = async tickers => {
     setResults([])
-    tickers.forEach(async ticker => {
+    for (const ticker of tickers) {
       const res = await getStockData(ticker);
       const histData = res.data;
-      setResults(results => [...results, { ticker, data: histData }]);
-    });
+      await setResults(results => [...results, { ticker, data: histData }]);
+    }
+    if (results.length < 6) {
+      setResults(results => [...results, { ticker: null, data: [] }]);
+    }
   };
   
   useEffect(() => {
@@ -40,6 +42,10 @@ const Dashboard = () => {
   const removeChart = ticker => {
     setShowModal(true);
     setSelectedTicker(ticker);
+  };
+
+  const addChart = () => {
+    console.log('adding chart.')
   };
 
   const onModalCancel = () => {
@@ -60,8 +66,8 @@ const Dashboard = () => {
         <Row className='pl-lg-5 pl-sm-0 pr-lg-5 pr-sm-0'>
           {
             results.map(({ticker, data}, id) => (
-              <Col key={`stock-${ticker}-${id}`} sm={12} lg={6} xl={4}>
-                <StockChart ticker={ticker} data={data} removeChart={removeChart}/>
+              <Col className='d-flex flex-column' key={`stock-${ticker}-${id}`} sm={12} lg={6} xl={4}>
+                <StockChart ticker={ticker} data={data} removeChart={removeChart} addChart={addChart}/>
               </Col>
             ))
           }

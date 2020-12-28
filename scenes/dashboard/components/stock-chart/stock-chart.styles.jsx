@@ -16,3 +16,10 @@ export const ChartContainer = styled('div')`
   background-color: white;
   box-shadow: 0 1px 4px 0 rgba(0,0,0,.14)
 `;
+
+export const AddStockContainer = styled('span')`
+  color: #6F8092;
+  &:hover {
+    color: #333333;
+  }
+`;
