@@ -87,7 +87,7 @@ const StockChart = ({ ticker, data, removeChart, addChart }) => {
       }
       { !ticker &&
         <div className='w-100 h-100 d-flex align-items-center text-center'>
-          <AddStockContainer className='mx-auto p-5'>
+          <AddStockContainer className='mx-auto p-5 m-3'>
             <BsPlusSquare
               style={{ cursor: 'pointer' }}
               size={100}
