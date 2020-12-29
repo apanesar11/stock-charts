@@ -61,12 +61,14 @@ const StockChart = ({ ticker, data, removeChart, showToolbar }) => {
   return (
     <>
       <TickerBox ticker={ticker}/>
-      <CloseContainer>
-        <AiOutlineClose
-          size={20}
-          onClick={() => removeChart(ticker)}
-        />
-      </CloseContainer>
+      { showChart &&
+        <CloseContainer>
+          <AiOutlineClose
+            size={20}
+            onClick={() => removeChart(ticker)}
+          />
+        </CloseContainer>
+      }
       <Chart
         options={options}
         series={series}

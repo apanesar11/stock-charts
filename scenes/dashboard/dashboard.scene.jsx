@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react";
-import {useCookies} from "react-cookie";
 import {Container, Row, Col} from "react-bootstrap";
 import Navbar from "../../components/navbar/navbar.component";
 import StockChart from "./components/stock-chart/stock-chart.component";
@@ -21,7 +20,6 @@ const constants = {
 };
 
 const Dashboard = () => {
-  const [cookies, setCookie] = useCookies(['selected-stocks']);
   const [stocks, setStocks] = useState([]);
   const [results, setResults] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -37,11 +35,11 @@ const Dashboard = () => {
   
   useEffect(() => {
     let tickers;
-    if (cookies.stocks) {
-      tickers = cookies.stocks
+    const ls = localStorage.getItem('stocks');
+    if (ls) {
+      tickers = JSON.parse(localStorage.getItem('stocks'))
     } else {
       tickers = constants.DEFAULT_STOCKS
-      setCookie('stocks', constants.DEFAULT_STOCKS);
     }
     setStocks(tickers);
     const tickersArr = tickers.map(stock => stock.ticker);
@@ -54,11 +52,14 @@ const Dashboard = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem('stocks', JSON.stringify(stocks));
+  }, [stocks]);
+
   const addStock = async ticker => {
     setLoading(true);
     await getStockData(ticker);
     await setStocks(stocks => [...stocks, { ticker }]);
-    setCookie('stocks', stocks);
     setLoading(false);
   };
 
@@ -79,8 +80,7 @@ const Dashboard = () => {
 
   const onModelDelete = async () => {
     await setResults(results => results.filter(({ticker}) => ticker !== selectedTicker));
-    await setStocks(stocks => stocks.filter(({ticker}) => ticker !== selectedTicker))
-    setCookie('stocks', stocks);
+    await setStocks(stocks => stocks.filter(({ticker}) => ticker !== selectedTicker));
     onModalCancel();
   };
 
