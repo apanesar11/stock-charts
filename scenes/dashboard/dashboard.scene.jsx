@@ -78,10 +78,10 @@ const Dashboard = () => {
     setSelectedTicker(null);
   };
 
-  const onModelDelete = async () => {
-    await setResults(results => results.filter(({ticker}) => ticker !== selectedTicker));
-    await setStocks(stocks => stocks.filter(({ticker}) => ticker !== selectedTicker));
+  const onModelDelete = () => {
     onModalCancel();
+    setResults(results => results.filter(({ticker}) => ticker !== selectedTicker));
+    setStocks(stocks => stocks.filter(({ticker}) => ticker !== selectedTicker));
   };
 
   return (

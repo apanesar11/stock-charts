@@ -18,6 +18,7 @@ export const OverlayBody = styled('div')`
   text-align: center;
   margin-top: 30px;
   margin: auto;
+  overflow: scroll;
 `
 
 export const CloseButton = styled('span')`
@@ -60,4 +61,5 @@ export const Button = styled('button')`
 export const SearchResults = styled('div')`
   color: white;
   padding-top: 70px;
+  height: 50%;
 `;
