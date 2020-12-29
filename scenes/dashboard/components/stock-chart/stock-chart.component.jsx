@@ -34,15 +34,7 @@ const StockChart = ({ ticker, data, removeChart, showToolbar }) => {
       enabled: true,
     },
     xaxis: {
-      type: 'category',
-      labels: {
-        formatter: function(val) {
-          return dayjs(val).format('MMM DD')
-        },
-        style: {
-          fontSize: '10px'
-        }
-      }
+      type: 'datetime',
     },
     yaxis: {
       tooltip: {
