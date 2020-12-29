@@ -23,13 +23,30 @@ app
 		server.use(bodyParser.json());
 
 		server.get('/api/dailyaggs', cors(corsOptions), async (req, res) => {
-			const {ticker} = req.query;
-			const polygonRes = await fetch(`https://api.polygon.io/v2/aggs/ticker/${ticker}/range/1/day/2020-10-01/2020-12-25?unadjusted=true&sort=asc&limit=120&apiKey=${POLYGON_KEY}`)
+			const {ticker, startDate, endDate} = req.query;
+			const polygonRes = await fetch(`https://api.polygon.io/v2/aggs/ticker/${ticker}/range/1/day/${startDate}/${endDate}?unadjusted=true&sort=asc&limit=120&apiKey=${POLYGON_KEY}`)
 			const data = await polygonRes.json();
-			const formattedData = data.results.map(data => ({
-        x: new Date(data.t),
-        y: [data.o, data.h, data.l, data.c]
-      }));
+			let formattedData;
+			if (data.resultsCount === 0) {
+				formattedData = [];
+			} else {
+				formattedData = data.results.map(data => ({
+					x: new Date(data.t),
+					y: [data.o, data.h, data.l, data.c]
+				}));
+			}
+			return res.send({
+				success: true,
+				data: formattedData
+			});
+		});
+
+		server.get('/api/search', cors(corsOptions), async (req, res) => {
+			const { query } = req.query;
+			const polygonRes = await fetch(`https://api.polygon.io/v2/reference/tickers?search=${query}&perpage=10&page=1&apiKey=${POLYGON_KEY}`);
+			const data = await polygonRes.json();
+			const {tickers} = data;
+			const formattedData = tickers.map(({ ticker, name }) => ({ticker, name}));
 			return res.send({
 				success: true,
 				data: formattedData
