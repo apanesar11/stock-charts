@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react";
+import {useCookies} from "react-cookie";
 import {Container, Row, Col} from "react-bootstrap";
 import Navbar from "../../components/navbar/navbar.component";
 import StockChart from "./components/stock-chart/stock-chart.component";
@@ -11,16 +12,17 @@ import {getStockData as getStockDataAPI} from "../../api";
 
 const constants = {
   DEFAULT_STOCKS: [
+    {ticker: 'AAPL'},
+    {ticker: 'MSFT'},
+    {ticker: 'AMZN'},
     {ticker: 'GOOG'},
-    {ticker: 'PLTR'},
-    {ticker: 'TSLA'},
-    {ticker: 'SPY'},
-    {ticker: 'AMD'},
-    //{ticker: 'ZM'}
+    {ticker: 'FB'}
   ]
 };
 
 const Dashboard = () => {
+  const [cookies, setCookie] = useCookies(['selected-stocks']);
+  const [stocks, setStocks] = useState([]);
   const [results, setResults] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedTicker, setSelectedTicker] = useState(null);
@@ -34,10 +36,18 @@ const Dashboard = () => {
   };
   
   useEffect(() => {
-    const tickers = constants.DEFAULT_STOCKS.map(stock => stock.ticker);
+    let tickers;
+    if (cookies.stocks) {
+      tickers = cookies.stocks
+    } else {
+      tickers = constants.DEFAULT_STOCKS
+      setCookie('stocks', constants.DEFAULT_STOCKS);
+    }
+    setStocks(tickers);
+    const tickersArr = tickers.map(stock => stock.ticker);
     (async () => {
       setResults([])
-      for (const ticker of tickers) {
+      for (const ticker of tickersArr) {
         await getStockData(ticker);
       }
       setLoading(false);
@@ -46,8 +56,10 @@ const Dashboard = () => {
 
   const addStock = async ticker => {
     setLoading(true);
-    await getStockData(ticker)
-    setLoading(false)
+    await getStockData(ticker);
+    await setStocks(stocks => [...stocks, { ticker }]);
+    setCookie('stocks', stocks);
+    setLoading(false);
   };
 
   const removeChart = ticker => {
@@ -65,8 +77,10 @@ const Dashboard = () => {
     setSelectedTicker(null);
   };
 
-  const onModelDelete = () => {
-    setResults(results => results.filter(({ticker}) => ticker !== selectedTicker))
+  const onModelDelete = async () => {
+    await setResults(results => results.filter(({ticker}) => ticker !== selectedTicker));
+    await setStocks(stocks => stocks.filter(({ticker}) => ticker !== selectedTicker))
+    setCookie('stocks', stocks);
     onModalCancel();
   };
 
