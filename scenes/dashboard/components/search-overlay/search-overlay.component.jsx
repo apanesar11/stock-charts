@@ -1,14 +1,17 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {Overlay, OverlayBody, CloseButton, SearchField, Button, SearchResults} from "./search-overlay.styles";
 import SearchItem from "./components/search-item/search-item.component";
-
 import {BiSearch} from "react-icons/bi";
+
+import {UiContext} from "../../../../contexts/ui/ui.context";
+import {toggleSearchOverlay} from "../../../../contexts/ui/ui.actions";
 
 import {getStockSearch} from "../../../../api";
 import {Circle} from "better-react-spinkit";
 
 
-const SearchOverlay = ({ setModalVisible, addStock }) => {
+const SearchOverlay = () => {
+  const { state, dispatch } = useContext(UiContext);
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [queryResults, setQueryResults] = useState([]);
@@ -22,8 +25,8 @@ const SearchOverlay = ({ setModalVisible, addStock }) => {
   };
 
   return (
-    <Overlay>
-      <CloseButton onClick={() => setModalVisible(false)} title="Close Overlay">x</CloseButton>
+    <Overlay className={`${state.showSearchOverlay ? 'd-block' : 'd-none'}`}>
+      <CloseButton onClick={() => dispatch(toggleSearchOverlay())} title="Close Overlay">x</CloseButton>
       <OverlayBody>
         <SearchField
           type="text"
@@ -42,8 +45,6 @@ const SearchOverlay = ({ setModalVisible, addStock }) => {
                   key={`${ticker}-${id}`}
                   ticker={ticker}
                   name={name}
-                  addStock={addStock}
-                  setModalVisible={setModalVisible}
                 />
               ))
             }

@@ -1,6 +1,8 @@
 import React from 'react';
 import Head from 'next/head';
 import App from 'next/app';
+import { UiContextProvider } from '../contexts/ui/ui.context';
+import { DataContextProvider } from "../contexts/data/data.context";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/main.css';
@@ -19,13 +21,15 @@ class MyApp extends App {
 	render() {
 		const { Component, pageProps } = this.props;
 		return (
-			<React.Fragment>
-				<Head>
-					<title>Stock Charts</title>
-					<link rel="icon" href="/logo.svg" />
-				</Head>
-				<Component {...pageProps}/>
-			</React.Fragment>
+			<DataContextProvider>
+				<UiContextProvider>
+					<Head>
+						<title>Stock Charts</title>
+						<link rel="icon" href="/logo.svg" />
+					</Head>
+					<Component {...pageProps}/>
+				</UiContextProvider>
+			</DataContextProvider>
 		);
 	}
 }

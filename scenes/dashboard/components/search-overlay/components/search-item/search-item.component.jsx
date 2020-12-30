@@ -1,13 +1,28 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {Col, Row} from "react-bootstrap";
 import {BsPlusSquare} from "react-icons/bs";
 
-const SearchItem = ({ ticker, name, addStock, setModalVisible}) => {
+import {UiContext} from "../../../../../../contexts/ui/ui.context";
+import {toggleSearchOverlay} from "../../../../../../contexts/ui/ui.actions";
+import {toggleDashboardLoading} from "../../../../../../contexts/ui/ui.actions";
+
+import {DataContext} from "../../../../../../contexts/data/data.context";
+import {updateStockData} from "../../../../../../contexts/data/data.actions";
+
+import {getStockData as getStockDataAPI} from "../../../../../../api";
+
+const SearchItem = ({ ticker, name }) => {
+  const { dispatch: uiDispatch } = useContext(UiContext);
+  const { dispatch: dataDispatch } = useContext(DataContext);
   const [addSize, setAddSize] = useState(40);
 
-  const addStockToResults = () => {
-    addStock(ticker);
-    setModalVisible(false);
+  const addStockToResults = async () => {
+    uiDispatch(toggleSearchOverlay());
+    uiDispatch(toggleDashboardLoading())
+    const res = await getStockDataAPI(ticker);
+    const { data } = res;
+    await dataDispatch(updateStockData({ ticker, data }));
+    uiDispatch(toggleDashboardLoading())
   };
 
   return (

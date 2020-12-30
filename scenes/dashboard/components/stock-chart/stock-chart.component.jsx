@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import dynamic from "next/dynamic";
 import {Circle} from "better-react-spinkit";
 import TickerBox from "./components/ticker-box/ticker-box.component";
@@ -6,8 +6,21 @@ import {AiOutlineClose} from "react-icons/ai";
 import {CloseContainer} from "./stock-chart.styles";
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const StockChart = ({ ticker, data, removeChart, showToolbar }) => {
+import {UiContext} from "../../../../contexts/ui/ui.context";
+import {toggleDeleteModal} from "../../../../contexts/ui/ui.actions";
+
+import {DataContext} from "../../../../contexts/data/data.context";
+import {updateSelectedStock} from "../../../../contexts/data/data.actions";
+
+const StockChart = ({ ticker, data }) => {
+  const { state: uiState, dispatch: uiDispatch } = useContext(UiContext);
+  const { dispatch: dataDispatch } = useContext(DataContext);
   const [showChart, setShowChart] = useState(false);
+
+  const onRemoveChart = () => {
+    dataDispatch(updateSelectedStock(ticker));
+    uiDispatch(toggleDeleteModal());
+  };
 
   const options = {
     chart: {
@@ -19,7 +32,7 @@ const StockChart = ({ ticker, data, removeChart, showToolbar }) => {
         },
       },
       toolbar: {
-        show: showToolbar
+        show: !uiState.showSearchOverlay
       }
     },
     title: {
@@ -56,7 +69,7 @@ const StockChart = ({ ticker, data, removeChart, showToolbar }) => {
         <CloseContainer>
           <AiOutlineClose
             size={20}
-            onClick={() => removeChart(ticker)}
+            onClick={onRemoveChart}
           />
         </CloseContainer>
       }
