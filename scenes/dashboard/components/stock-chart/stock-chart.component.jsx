@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import {Circle} from "better-react-spinkit";
 import TickerBox from "./components/ticker-box/ticker-box.component";

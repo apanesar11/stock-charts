@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {Container, Row, Col} from "react-bootstrap";
 import Navbar from "../../components/navbar/navbar.component";
+import PageLoading from "../../components/page-loading/page-loading.component";
 import StockChart from "./components/stock-chart/stock-chart.component";
 import DeleteModal from "./components/delete-modal/delete-modal.component";
 import SearchOverlay from "./components/search-overlay/search-overlay.component";
@@ -85,33 +86,35 @@ const Dashboard = () => {
   };
 
   return (
-    <div>
+    <>
       <Navbar/>
-      <DeleteModal show={showModal} onModalCancel={onModalCancel} onModelDelete={onModelDelete}/>
-      { searchVisible &&
-        <SearchOverlay setModalVisible={setSearchVisible} addStock={addStock}/>
-      }
-      <Container fluid className='mt-5 pt-3'>
-        <Row className='pl-lg-5 pl-sm-0 pr-lg-5 pr-sm-0'>
-          {
-            results.map(({ticker, data}, id) => (
-              <Col className='d-flex flex-column' key={`stock-${ticker}-${id}`} sm={12} lg={6} xl={4}>
+      <PageLoading loading={loading}>
+        <DeleteModal show={showModal} onModalCancel={onModalCancel} onModelDelete={onModelDelete}/>
+        { searchVisible &&
+          <SearchOverlay setModalVisible={setSearchVisible} addStock={addStock}/>
+        }
+        <Container fluid className='mt-5 pt-3'>
+          <Row className='pl-lg-5 pl-sm-0 pr-lg-5 pr-sm-0'>
+            {
+              results.map(({ticker, data}, id) => (
+                <Col className='d-flex flex-column' key={`stock-${ticker}-${id}`} sm={12} lg={6} xl={4}>
+                  <ChartContainer className={`h-100 mb-5 p-3`}>
+                    <StockChart ticker={ticker} data={data} removeChart={removeChart} showToolbar={!searchVisible}/>
+                  </ChartContainer>
+                </Col>
+              ))
+            }
+            { !loading && results.length < 6 &&
+              <Col className='d-flex flex-column' key={`stock-add-ticker`} sm={12} lg={6} xl={4}>
                 <ChartContainer className={`h-100 mb-5 p-3`}>
-                  <StockChart ticker={ticker} data={data} removeChart={removeChart} showToolbar={!searchVisible}/>
+                  <AddChartCard addChart={addChart}/>
                 </ChartContainer>
               </Col>
-            ))
-          }
-          { !loading && results.length < 6 &&
-            <Col className='d-flex flex-column' key={`stock-add-ticker`} sm={12} lg={6} xl={4}>
-              <ChartContainer className={`h-100 mb-5 p-3`}>
-                <AddChartCard addChart={addChart}/>
-              </ChartContainer>
-            </Col>
-          }
-        </Row>
-      </Container>
-    </div>
+            }
+          </Row>
+        </Container>
+      </PageLoading>
+    </>
   );
 };
 
