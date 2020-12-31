@@ -9,6 +9,7 @@ export const Overlay = styled('div')`
   left: 0;
   background-color: rgb(0,0,0);
   background-color: rgba(0,0,0, 0.9); /* Black with a little bit see-through */
+  overflow: scroll;
 `;
 
 export const OverlayBody = styled('div')`
@@ -18,7 +19,7 @@ export const OverlayBody = styled('div')`
   text-align: center;
   margin-top: 30px;
   margin: auto;
-  overflow: scroll;
+  padding-bottom: 50px;
 `
 
 export const CloseButton = styled('span')`
