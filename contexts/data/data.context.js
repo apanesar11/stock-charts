@@ -6,13 +6,15 @@ const DataContext = React.createContext();
 const DataContextProvider = ({ children }) => {
   const initialState = {
     stockData: [],
-    selectedStock: null
+    selectedStock: null,
+    views: [],
+    currentView: null
   };
   const [state, dispatch] = useReducer(DataContextReducer, initialState);
 
   useEffect(() => {
-    localStorage.setItem('stocks', JSON.stringify(state.stockData));
-  }, [state.stockData])
+    localStorage.setItem('views', JSON.stringify(state.views));
+  }, [state.views])
 
   return(
     <DataContext.Provider value={{ state, dispatch }}>

@@ -11,8 +11,8 @@ const TickerBox = ({ ticker }) => (
       borderRadius: '3px'
     }}
   >
-    <div className='w-100'>
-      <h5 className='text-center m-0'>{ticker}</h5>
+    <div className='w-100 text-center'>
+      <span className='text-center m-0'>{ticker}</span>
     </div>
   </div>
 );

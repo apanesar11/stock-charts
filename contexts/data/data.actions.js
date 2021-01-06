@@ -14,3 +14,13 @@ export const updateSelectedStock = stock => ({
   type: DataActionTypes.UPDATE_SELECTED_STOCK,
   payload: stock
 });
+
+export const updateStockViews = views => ({
+  type: DataActionTypes.UPDATE_STOCK_VIEWS,
+  payload: views
+});
+
+export const updateCurrentView = viewName => ({
+  type: DataActionTypes.UPDATE_CURRENT_VIEW,
+  payload: viewName
+});
